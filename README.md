@@ -3,6 +3,11 @@ A cli tool to search torrents made with the jackett api
 
 Install jackett, add some indexers, copy your api key and replace 'YOUR_API_KEY_HERE' string in the source code for you api key
 
+# Dependencies
+- jq
+- fzf
+- jackett
+
 # Demo
 
 (click the image)
