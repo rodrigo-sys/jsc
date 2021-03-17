@@ -1,6 +1,10 @@
 # Jackett Search Cli
 A cli tool to search torrents made with the [jackett](https://github.com/Jackett/Jackett) api
 
+# Demo
+
+[![jsc demo](./demo.png)](https://www.youtube.com/embed/-5rFsDTS9y8)
+
 # Installation
 
 - Install the dependencies (jq, fzf, jackett)
@@ -88,12 +92,6 @@ piratebay(){
 - jq
 - fzf
 - jackett
-
-# Demo
-
-(click the image)
-
-[![jsc demo](https://img.youtube.com/vi/YpXuCSzH4A0/maxresdefault.jpg)](https://www.youtube.com/embed/YpXuCSzH4A0)
 
 # TODO
 - [ ] Improve readme
