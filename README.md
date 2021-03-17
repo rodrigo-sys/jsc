@@ -3,7 +3,7 @@ A cli tool to search torrents made with the [jackett](https://github.com/Jackett
 
 # Demo
 
-[![jsc demo](./demo.png)](https://www.youtube.com/embed/-5rFsDTS9y8)
+[![jsc demo](./demo.png)](https://www.youtube.com/embed/vS_9F329lpQ)
 
 # Installation
 
