@@ -96,7 +96,9 @@ piratebay(){
 [![jsc demo](https://img.youtube.com/vi/YpXuCSzH4A0/maxresdefault.jpg)](https://www.youtube.com/embed/YpXuCSzH4A0)
 
 # TODO
-- Improve readme
-- Make the demo a gif 
-- Share in social media 
+- [ ] Improve readme
+- [ ] Make the demo a gif 
+- [ ] Share in social media 
+- [ ] Maybe add stream and open flag
 
+G
