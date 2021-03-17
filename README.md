@@ -71,7 +71,7 @@ But if you want...
  
   ```
   
-Make function to make easy:
+Make functions to make easy:
  
 ```shell
 netflix(){
