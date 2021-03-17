@@ -101,4 +101,3 @@ piratebay(){
 - [ ] Share in social media 
 - [ ] Maybe add stream and open flag
 
-G
