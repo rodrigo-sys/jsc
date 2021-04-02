@@ -13,7 +13,7 @@ A cli tool to search torrents made with the [jackett](https://github.com/Jackett
 - Download the script
  
   ```shell
-  wget https://raw.githubusercontent.com/rodrigo-sys/jsc/main/jcs
+  wget https://raw.githubusercontent.com/rodrigo-sys/jsc/main/jsc
   ```
 - Open it
 - Change 'YOUR_API_KEY_HERE' string, in the second line for you jackett api key
