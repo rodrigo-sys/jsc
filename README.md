@@ -104,3 +104,6 @@ piratebay(){
 - [ ] Share in social media 
 - [ ] Maybe add stream and open flag
 
+# Donations
+Monero address: 4AAMMG4faRAhThF2hATV3BbxauGBdoD9AKzcZwANcr2sXtCADe7jpwABkDFtrkNEodJQq4xFVhPaMAHpFUZwZ9sqCwVLM7m
+
