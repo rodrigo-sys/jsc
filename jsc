@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 api_key='YOUR_API_KEY_HERE' 
 alias fzf="fzf --header-lines 1 --reverse --nth 5.. --with-nth=2.."
