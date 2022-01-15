@@ -57,39 +57,39 @@ But if you want...
   * With [webtorrent](https://github.com/webtorrent/webtorrent-clii)
  
   ```shell
-  jsc palm springs | xargs -r webtorrent --mpv
+  jsc palm springs | xargs -n 1 -r webtorrent --mpv
   ```
   
   * With [mpv-webtorrent-hook](https://github.com/mrxdst/webtorrent-mpv-hook)
   
   ```shell
-    jsc queen gambit | xargs -r mpv
+    jsc queen gambit | xargs -n 1 -r mpv
   ```
  
 - Download 
  
   ```shell
-  jsc palm springs | xargs -r xdg-open 
+  jsc palm springs | xargs -n 1 -r xdg-open 
  
   ```
   
   or
  
   ```shell
-  jsc palm springs | xargs -r <torrent_client>
+  jsc palm springs | xargs -n 1 -r <torrent_client>
  
   ```
   
 Make functions to make easy:
  
 ```shell
-netflix(){
-  jsc "$@" | xargs -r webtorrent --mpv
+nfx(){ //netflix
+  jsc "$@" | xargs -n 1 -r webtorrent --mpv
 }
 ```
 ```shell
-piratebay(){
-  jsc "$@" | xargs -r xdg-open 
+tpb(){ // the pirate bay
+  jsc "$@" | xargs -n 1 -r xdg-open 
 }
 ```
 
