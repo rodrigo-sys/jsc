@@ -83,12 +83,12 @@ But if you want...
 Make functions to make easy:
  
 ```shell
-nfx(){ //netflix
+nfx(){ # netflix
   jsc "$@" | xargs -n 1 -r webtorrent --mpv
 }
 ```
 ```shell
-tpb(){ // the pirate bay
+tpb(){ # the pirate bay
   jsc "$@" | xargs -n 1 -r xdg-open 
 }
 ```
