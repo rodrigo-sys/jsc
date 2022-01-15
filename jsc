@@ -1,7 +1,7 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
-api_key='YOUR_API_KEY_HERE'
-alias fzf="fzf --header-lines 1 --reverse --nth 5.. --with-nth=2.."
+api_key='6jchchegslblfgw4kuweoyg1nohy2ngj' 
+export FZF_DEFAULT_OPTS="--header-lines 1 --reverse --nth 4.. --with-nth=2.. --multi -i"
 
 while getopts ":s:t:" o; do case "${o}" in
 	s) search_term=${OPTARG};;
@@ -13,6 +13,7 @@ esac done
 # tracker="$tracker"'1337x,rarbg'
 
 url="http://127.0.0.1:9117/api/v2.0/indexers/all/results?apikey=$api_key"
+
 [ -n "$tracker" ] && url="$url""&Tracker%5B%5D=$tracker"
 
 raw_torrents_data=$(curl -s -G --data-urlencode "Query=$search_term" "$url")
@@ -26,23 +27,20 @@ torrents_table=$(
   column --table-columns "ID,Seeder,Size,Tracker,Title" --table --separator $'\t'
 )
 
-selected_torrent="$(echo "$torrents_table" | fzf)"
-selected_torrent_id="$(echo "$selected_torrent" | cut -d' ' -f1)"
+selected_torrents="$(echo "$torrents_table" | fzf)"
+selected_torrents_id="$(echo "$selected_torrents" | cut -d' ' -f1 | tr '\n' ' ')"
 
-# [ -n "$selected_torrent_id" ] && (
-#   echo "$torrents_data" | jq -e ".[$selected_torrent_id] | select(.MagnetUri != null) | .MagnetUri" ||
-#   echo "$torrents_data" | jq -e ".[$selected_torrent_id] | select(.Link != null) | .Link" | xargs -r wget --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||'
+for selected_torrent_id in $selected_torrents_id; do
+  if [ -n "$selected_torrent_id" ]; then
 
-# )
+    magnet_link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .MagnetUri")"
 
-if [ -n "$selected_torrent_id" ]; then
-  magnet_link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .MagnetUri")"
+    if [ "$magnet_link" = "null" ]; then
+      link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .Link")"
 
-  if [ "$magnet_link" = "null" ]; then
-    link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .Link")"
+      [ -n "$link" ] && magnet_link="$(wget "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||')"
+    fi
 
-    [ -n "$link" ] && magnet_link="$(wget "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||')"
+    echo "$magnet_link"
   fi
-
-  echo "$magnet_link"
-fi
+done
