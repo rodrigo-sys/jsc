@@ -1,6 +1,8 @@
 #!/usr/bin/bash
+# is not posix becase the $'\t' thing
+# i don't know if there is an equivalent in sh
 
-api_key='6jchchegslblfgw4kuweoyg1nohy2ngj' 
+api_key='YOUR_API_KEY_HERE'
 export FZF_DEFAULT_OPTS="--header-lines 1 --reverse --nth 4.. --with-nth=2.. --multi -i"
 
 while getopts ":s:t:" o; do case "${o}" in
@@ -13,7 +15,6 @@ esac done
 # tracker="$tracker"'1337x,rarbg'
 
 url="http://127.0.0.1:9117/api/v2.0/indexers/all/results?apikey=$api_key"
-
 [ -n "$tracker" ] && url="$url""&Tracker%5B%5D=$tracker"
 
 raw_torrents_data=$(curl -s -G --data-urlencode "Query=$search_term" "$url")
@@ -28,9 +29,10 @@ torrents_table=$(
 )
 
 selected_torrents="$(echo "$torrents_table" | fzf)"
-selected_torrents_id="$(echo "$selected_torrents" | cut -d' ' -f1 | tr '\n' ' ')"
+selected_torrents_id="$(echo "$selected_torrents" | cut -d' ' -f1)"
 
-for selected_torrent_id in $selected_torrents_id; do
+echo "$selected_torrents_id" | \
+while read selected_torrent_id; do
   if [ -n "$selected_torrent_id" ]; then
 
     magnet_link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .MagnetUri")"
@@ -38,9 +40,10 @@ for selected_torrent_id in $selected_torrents_id; do
     if [ "$magnet_link" = "null" ]; then
       link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .Link")"
 
-      [ -n "$link" ] && magnet_link="$(wget "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||')"
+      [ -n "$link" ] && \
+       magnet_link="$(wget "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||')"
     fi
 
-    echo "$magnet_link"
+    printf "%s\n" "$magnet_link"
   fi
 done
