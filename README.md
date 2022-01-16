@@ -16,7 +16,7 @@ A cli tool to search torrents made with the [jackett](https://github.com/Jackett
   wget https://raw.githubusercontent.com/rodrigo-sys/jsc/main/jsc
   ```
 - Open it
-- Change 'YOUR_API_KEY_HERE' string, in the third line for you jackett api key
+- Change 'YOUR_API_KEY_HERE' string, in the head of the file for you jackett api key
 - Made it executable
 
   ```shell
