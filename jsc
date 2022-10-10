@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# is not posix becase the $'\t' thing
+# is not posix because the $'\t' thing
 # i don't know if there is an equivalent in sh
 
 api_key='YOUR_API_KEY_HERE'
@@ -41,7 +41,7 @@ while read selected_torrent_id; do
       link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .Link")"
 
       [ -n "$link" ] && \
-       magnet_link="$(wget "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|Location:||')"
+       magnet_link="$(wget -O /dev/null "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|\s\sLocation:\s||')"
     fi
 
     printf "%s\n" "$magnet_link"
