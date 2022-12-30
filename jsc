@@ -5,16 +5,19 @@
 api_key='YOUR_API_KEY_HERE'
 export FZF_DEFAULT_OPTS="--header-lines 1 --reverse --nth 4.. --with-nth=2.. --multi -i"
 
-while getopts ":s:t:" o; do case "${o}" in
+while getopts "s:t:nc:" o; do case "${o}" in
 	s) search_term=${OPTARG};;
 	t) tracker=${OPTARG};;
+	n) nointeractive='1';;
+	c) columns=${OPTARG};;
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
 
 [ $OPTIND -eq 1 ] && search_term="$*"
-# tracker="$tracker"'1337x,rarbg'
+[ -z "$columns" ] && columns='[if .MagnetUri == null then .Link else .MagnetUri end, .Seeders, .Size, .TrackerId, .Title]'
 
 url="http://127.0.0.1:9117/api/v2.0/indexers/all/results?apikey=$api_key"
+# tracker="$tracker"'1337x,rarbg'
 [ -n "$tracker" ] && url="$url""&Tracker%5B%5D=$tracker"
 
 raw_torrents_data=$(curl -s -G --data-urlencode "Query=$search_term" "$url")
@@ -22,28 +25,22 @@ torrents_data="$(echo "$raw_torrents_data" | jq '.Results | sort_by(.Seeders) | 
 
 torrents_table=$(
   echo "$torrents_data" |
-  jq -r '.[] | [.Seeders, .Size, .TrackerId, .Title] | @tsv' |
-  numfmt --to=iec --field 2 -d$'\t' |
-  nl -v 0 -w 1 | 
-  column --table-columns "ID,Seeder,Size,Tracker,Title" --table --separator $'\t'
+  jq -r '.[] | '"$columns"' | @tsv' |
+  numfmt --to=iec --field 3 -d$'\t'  |
+  column --table-columns "MOL,Seeder,Size,Tracker,Title" --table --separator $'\t'
 )
 
+[ "$nointeractive" = 1 ] && { echo "$torrents_table" ; exit ; }
+
 selected_torrents="$(echo "$torrents_table" | fzf)"
-selected_torrents_id="$(echo "$selected_torrents" | cut -d' ' -f1)"
 
-echo "$selected_torrents_id" | \
-while read selected_torrent_id; do
-  if [ -n "$selected_torrent_id" ]; then
-
-    magnet_link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .MagnetUri")"
-
-    if [ "$magnet_link" = "null" ]; then
-      link="$(echo "$torrents_data" | jq -r ".[$selected_torrent_id] | .Link")"
-
-      [ -n "$link" ] && \
-       magnet_link="$(wget -O /dev/null "$link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|\s\sLocation:\s||')"
-    fi
-
-    printf "%s\n" "$magnet_link"
+echo "$selected_torrents" | awk '{print $1}' |
+while read -r magnet_or_link; do
+  if echo "$magnet_or_link" | grep -q '^magnet:'; then
+    magnet="$magnet_or_link"
+  else
+    magnet="$(wget -O /dev/null "$magnet_or_link" --server-response 2>&1 | grep 'Location:' -m 1 | sed 's|\s\sLocation:\s||')"
   fi
+
+  echo "$magnet"
 done
